@@ -7,16 +7,16 @@ import Link from "next/link";
 export const dynamic = 'force-dynamic';
 
 interface Props {
-  params: Promise<{ username: string; shortId: string }>;
+  params: Promise<{ username: string; linkId: string }>;
 }
 
 export default async function UserPage({ params }: Props) {
-  const { username, shortId } = await params;
+  const { username, linkId } = await params;
   
   const link = await prisma.link.findFirst({
     where: { 
       user: { username },
-      shortId: shortId
+      shortId: linkId
     }
   });
 
@@ -59,7 +59,7 @@ export default async function UserPage({ params }: Props) {
         </div>
 
         <div className="bg-white/80 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-6 sm:p-8">
-          <MessageForm username={username} shortId={shortId} />
+          <MessageForm username={username} shortId={linkId} />
         </div>
       </main>
     </div>
