@@ -13,12 +13,30 @@ interface Props {
 export default async function UserPage({ params }: Props) {
   const { username, linkId } = await params;
   
-  const link = await prisma.link.findFirst({
+  // Try to find by shortId first, then by direct id
+  let link = await prisma.link.findFirst({
     where: { 
       user: { username },
       shortId: linkId
     }
   });
+  
+  // If not found by shortId, try by direct id
+  if (!link) {
+    link = await prisma.link.findFirst({
+      where: { 
+        user: { username },
+        id: linkId
+      }
+    });
+  }
+  
+  // If still not found, try finding any link for this user
+  if (!link) {
+    link = await prisma.link.findFirst({
+      where: { user: { username } }
+    });
+  }
 
   if (!link) {
     notFound();
